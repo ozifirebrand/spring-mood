@@ -1,9 +1,13 @@
 package com.phoenix.phoenix.data.models;
 
-import javax.persistence.*;
-import java.util.Date;
+import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.Date;
 @Entity
+@Data
 public class Product {
     @Id
     @Column(nullable = false)
@@ -15,7 +19,9 @@ public class Product {
     private String description;
     private double price;
     private int quantity;
-    private Date dateCreated;
+
+    @CreationTimestamp
+    private LocalDate dateCreated;
     private String imageUrl;
 
 }
