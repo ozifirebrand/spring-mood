@@ -66,4 +66,12 @@ class ProductRepositoryTest {
         assertThat(products.size()).isEqualTo(4);
         assertThat(products).isNotNull();
     }
+
+    @Test
+    public void testFindProductByName(){
+        Product product = productRepository.findProductByName("Omo");
+        assertThat(product.getQuantity()).isEqualTo(3);
+        assertThat(product.getName()).isEqualTo("Omo");
+        assertThat(product.getPrice()).isEqualTo(554);
+    }
 }
