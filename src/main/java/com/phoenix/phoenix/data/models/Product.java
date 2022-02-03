@@ -19,9 +19,9 @@ public class Product {
     private String description;
     private double price;
     private int quantity;
+    private String imageUrl;
 
     @CreationTimestamp
     private LocalDate dateCreated;
-    private String imageUrl;
 
 }
