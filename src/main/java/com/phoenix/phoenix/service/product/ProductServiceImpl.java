@@ -33,6 +33,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product createProduct(ProductDto productDto) {
-        return null;
+
+        //product dto is not null
+        if ( productDto == null ) {
+            throw new IllegalArgumentException("Argument cannot be null");
+        }
+
+        Product product = new Product();
+        product.setName(productDto.getName());
+        product.setPrice(productDto.getPrice());
+        product.setQuantity(productDto.getQuantity());
+        product.setDescription(productDto.getDescription());
+
+        return productRepository.save(product);
     }
 }
