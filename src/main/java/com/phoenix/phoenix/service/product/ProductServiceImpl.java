@@ -3,6 +3,7 @@ package com.phoenix.phoenix.service.product;
 import com.phoenix.phoenix.data.dto.ProductDto;
 import com.phoenix.phoenix.data.models.Product;
 import com.phoenix.phoenix.data.repository.ProductRepository;
+import com.phoenix.phoenix.web.exceptions.BusinessLogicException;
 import com.phoenix.phoenix.web.exceptions.ProductDoesNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,12 +33,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product createProduct(ProductDto productDto) {
+    public Product createProduct(ProductDto productDto) throws BusinessLogicException {
 
         //product dto is not null
         if ( productDto == null ) {
             throw new IllegalArgumentException("Argument cannot be null");
         }
+        if ( productRepository.findProductByName(productDto.getName()) != null ) throw new BusinessLogicException("Product already exists");
 
         Product product = new Product();
         product.setName(productDto.getName());
