@@ -73,5 +73,7 @@ class ProductRepositoryTest {
         assertThat(product.getQuantity()).isEqualTo(3);
         assertThat(product.getName()).isEqualTo("Omo");
         assertThat(product.getPrice()).isEqualTo(554);
+
+        log.info("Product retrieved :: {}", product);
     }
 }
