@@ -76,4 +76,16 @@ class ProductRepositoryTest {
 
         log.info("Product retrieved :: {}", product);
     }
+
+    @Test
+    public void testUpdateProduct(){
+        Product savedProduct = productRepository.findProductByName("Omo");
+        assertThat(savedProduct.getName()).isEqualTo("Omo");
+        assertThat(savedProduct.getPrice()).isEqualTo(554);
+        savedProduct.setName("Tura");
+        savedProduct.setPrice(500);
+        productRepository.save(savedProduct);
+        assertThat(savedProduct.getName()).isEqualTo("Tura");
+        assertThat(savedProduct.getPrice()).isEqualTo(500);
+    }
 }
