@@ -59,6 +59,6 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(productDto.getPrice());
         product.setName(product.getName());
 
-        return product;
+        return productRepository.save(product);
     }
 }
