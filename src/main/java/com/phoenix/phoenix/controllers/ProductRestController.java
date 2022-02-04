@@ -37,8 +37,8 @@ public class ProductRestController {
     }
 
     @PatchMapping("product-update")
-    public ResponseEntity<?> updateProduct(ProductDto productDto){
+    public ResponseEntity<?> updateProduct(Long productId, ProductDto productDto){
 
-        return ResponseEntity.accepted().body(productService.updateProduct(productDto));
+        return ResponseEntity.accepted().body(productService.updateProduct(productId, productDto));
     }
 }
