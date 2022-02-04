@@ -1,10 +1,14 @@
 package com.phoenix.phoenix.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import com.phoenix.phoenix.data.dto.ProductDto;
 import com.phoenix.phoenix.data.models.Product;
 import com.phoenix.phoenix.service.product.ProductService;
 import com.phoenix.phoenix.web.exceptions.BusinessLogicException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,9 +40,14 @@ public class ProductRestController {
         }
     }
 
-    @PatchMapping("product-update")
-    public ResponseEntity<?> updateProduct(Long productId, ProductDto productDto){
+    @PatchMapping(path = "/{id}", consumes = "application/json-patch+json")
+    public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody JsonPatch patch){
+        try{
+            Product updatedProduct = productService.updateProduct(id, patch);
+            return ResponseEntity.status(HttpStatus.OK).body(updatedProduct);
+        } catch (BusinessLogicException | JsonPatchException | JsonProcessingException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.getMessage());
+        }
 
-        return ResponseEntity.accepted().body(productService.updateProduct(productId, productDto));
     }
 }
