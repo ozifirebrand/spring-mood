@@ -1,5 +1,10 @@
 package com.phoenix.phoenix.service.product;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import com.phoenix.phoenix.data.dto.ProductDto;
 import com.phoenix.phoenix.data.models.Product;
 import com.phoenix.phoenix.data.repository.ProductRepository;
@@ -50,15 +55,31 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.save(product);
     }
 
-    @Override
-    public Product updateProduct(Long productId, ProductDto productDto) {
-        Product product = productRepository.findById(productId).get();
-        product.setImageUrl(productDto.getImageUrl());
-        product.setQuantity(productDto.getQuantity());
-        product.setDescription(productDto.getDescription());
-        product.setPrice(productDto.getPrice());
-        product.setName(product.getName());
+//    private Product savedOrUpdate(){
+//
+//
+//    }
 
-        return productRepository.save(product);
+    @Override
+    public Product updateProduct(Long productId,JsonPatch patch) throws BusinessLogicException, JsonPatchException, JsonProcessingException {
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if ( optionalProduct.isEmpty() ) throw new BusinessLogicException
+                ("Product with ID "+productId+" does not exist");
+        Product targetProduct = optionalProduct.get();
+
+        try{
+            targetProduct = applyPatchToProduct(patch, targetProduct);
+            return productRepository.save(targetProduct);
+
+        }catch (JsonPatchException|JsonProcessingException exception){
+            throw new BusinessLogicException("Update failed");
+        }
+    }
+
+    private Product applyPatchToProduct(JsonPatch patch, Product targetProduct) throws JsonProcessingException, JsonPatchException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode patched = patch.apply(mapper.convertValue(targetProduct, JsonNode.class));
+
+        return mapper.treeToValue(patched, Product.class);
     }
 }
