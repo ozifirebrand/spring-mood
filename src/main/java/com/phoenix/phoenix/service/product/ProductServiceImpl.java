@@ -51,12 +51,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProduct(ProductDto productDto) {
-        Product product = productRepository.findProductByName(productDto.getName());
+    public Product updateProduct(Long productId, ProductDto productDto) {
+        Product product = productRepository.findById(productId).get();
         product.setImageUrl(productDto.getImageUrl());
         product.setQuantity(productDto.getQuantity());
         product.setDescription(productDto.getDescription());
         product.setPrice(productDto.getPrice());
+        product.setName(product.getName());
 
         return product;
     }
