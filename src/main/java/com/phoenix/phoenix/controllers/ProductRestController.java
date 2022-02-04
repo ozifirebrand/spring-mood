@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @RestController
-@RequestMapping("api/products")
+@RequestMapping("/api/product")
 public class ProductRestController {
 
     @Autowired
     ProductService productService;
 
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<?> findAllProducts(){
 
         List<Product> productList = productService.getAllProducts();
@@ -28,7 +28,7 @@ public class ProductRestController {
         return ResponseEntity.ok().body(productList);
     }
 
-    @PostMapping("products")
+    @PostMapping()
     public ResponseEntity<?> createProduct(ProductDto productDto){
 
         try{
