@@ -49,7 +49,7 @@ class ProductRepositoryTest {
     }
 
     @Test
-    public void testFindExisingProductFromDatabase(){
+    public void testFindExistingProductFromDatabase(){
         Product product = productRepository.findById(12L).orElse(null);
         assertThat(product).isNotNull();
         assertThat(product.getId()).isEqualTo(12);

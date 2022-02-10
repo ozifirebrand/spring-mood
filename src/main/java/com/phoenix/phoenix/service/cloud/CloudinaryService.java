@@ -1,5 +1,8 @@
 package com.phoenix.phoenix.service.cloud;
 
-public interface Cloudinary {
-    void upload();
+import java.io.File;
+import java.util.Map;
+
+public interface CloudinaryService {
+    Map<?, ?> upload(File file, Map<?,?> params);
 }
