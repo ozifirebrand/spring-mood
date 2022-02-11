@@ -3,6 +3,7 @@ package com.phoenix.phoenix.data.repository;
 import com.phoenix.phoenix.data.models.Cart;
 import com.phoenix.phoenix.data.models.Item;
 import com.phoenix.phoenix.data.models.Product;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,9 +14,12 @@ import org.springframework.test.context.jdbc.Sql;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
+@Slf4j
 @Sql(scripts = {"/db/insert.sql"})
 class CartRepositoryTest {
 
+    @Autowired
+    private CartRepository cartRepository;
     @Autowired
     private ProductRepository repository;
 
@@ -30,6 +34,11 @@ class CartRepositoryTest {
         Item item = new Item(product, 2);
         Cart cart  = new Cart();
         cart.addItem(item);
+        cartRepository.save(cart);
+        assertThat(cart.getId()).isNotNull();
+        assertThat(cart.getItemList().isEmpty()).isFalse();
+        assertThat(cart.getItemList().get(0).getProduct()).isNotNull();
+
     }
 
 
