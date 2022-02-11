@@ -7,13 +7,15 @@ import org.springframework.context.annotation.Bean;
 
 @org.springframework.context.annotation.Configuration
 public class Configuration {
+
     @Value("${cloudinary.cloud-name}")
     private String cloudName;
     @Value("${cloudinary.api-key}")
     private String apiKey;
     @Value("${cloudinary.api-secret}")
     private String apiSecret;
-    @Bean
+
+    @Bean("cloudinary")
     public Cloudinary cloudinary(){
         return new Cloudinary(ObjectUtils.asMap(
                 "cloud_name", cloudName,
