@@ -55,10 +55,12 @@ public class ProductServiceImpl implements ProductService {
         Product product = new Product();
 
         try{
-            Map<?,?> uploadResult = cloudinaryService
-                    .upload(productDto.getImage().getBytes(), ObjectUtils.asMap("public_id",
-                            "inventory/"+productDto.getImage().getOriginalFilename(), "overwrite", true));
-            product.setImageUrl(uploadResult.get("url").toString());
+            if ( productDto.getImage()!= null ) {
+                Map<?, ?> uploadResult = cloudinaryService
+                        .upload(productDto.getImage().getBytes(), ObjectUtils.asMap("public_id",
+                                "inventory/" + productDto.getImage().getOriginalFilename(), "overwrite", true));
+                product.setImageUrl(uploadResult.get("url").toString());
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
