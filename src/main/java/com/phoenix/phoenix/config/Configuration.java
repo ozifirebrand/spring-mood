@@ -1,4 +1,4 @@
-package config;
+package com.phoenix.phoenix.config;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
