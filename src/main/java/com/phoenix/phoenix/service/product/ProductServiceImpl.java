@@ -1,5 +1,6 @@
 package com.phoenix.phoenix.service.product;
 
+import com.cloudinary.utils.ObjectUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,18 +9,23 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.phoenix.phoenix.data.dto.ProductDto;
 import com.phoenix.phoenix.data.models.Product;
 import com.phoenix.phoenix.data.repository.ProductRepository;
+import com.phoenix.phoenix.service.cloud.CloudinaryService;
 import com.phoenix.phoenix.web.exceptions.BusinessLogicException;
 import com.phoenix.phoenix.web.exceptions.ProductDoesNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 @Service
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
     ProductRepository productRepository;
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     @Override
     public List<Product> getAllProducts() {
@@ -47,6 +53,16 @@ public class ProductServiceImpl implements ProductService {
         if ( productRepository.findProductByName(productDto.getName()) != null ) throw new BusinessLogicException("Product already exists");
 
         Product product = new Product();
+
+        try{
+            Map<?,?> uploadResult = cloudinaryService
+                    .upload(productDto.getImage().getBytes(), ObjectUtils.asMap("public_id",
+                            "inventory/"+productDto.getImage().getOriginalFilename(), "overwrite", true));
+            product.setImageUrl(uploadResult.get("url").toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         product.setName(productDto.getName());
         product.setPrice(productDto.getPrice());
         product.setQuantity(productDto.getQuantity());
@@ -54,11 +70,6 @@ public class ProductServiceImpl implements ProductService {
 
         return productRepository.save(product);
     }
-
-//    private Product savedOrUpdate(){
-//
-//
-//    }
 
     @Override
     public Product updateProduct(Long productId,JsonPatch patch) throws BusinessLogicException, JsonPatchException, JsonProcessingException {
