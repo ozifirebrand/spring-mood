@@ -13,14 +13,9 @@ import java.util.Map;
 public class CloudinaryServiceImpl implements CloudinaryService{
     @Autowired
     private Cloudinary cloudinary;
-    @Override
-    public Map<?, ?> upload(File file, Map<?, ?> params) throws IOException {
-
-        return cloudinary.uploader().upload(Files.readAllBytes(file.toPath()), params);
-    }
 
     @Override
-    public Map<?, ?> upload(MultipartFile file, Map<?, ?> params) throws IOException {
-        return cloudinary.uploader().upload(file.getBytes(), params);
+    public Map<?, ?> upload(byte[] bytes, Map<?, ?> params) throws IOException {
+        return cloudinary.uploader().upload(bytes, params);
     }
 }
