@@ -29,11 +29,9 @@ public class ProductRestController {
         return ResponseEntity.ok().body(productList);
     }
 
-    @PostMapping
-    public ResponseEntity<?> createProduct(@RequestBody ProductDto productDto,
-                                           @RequestPart MultipartFile productImage){
+    @PostMapping(consumes = {"multipart/form-data"})
+    public ResponseEntity<?> createProduct(@ModelAttribute ProductDto productDto){
 
-        if ( productDto != null ) productDto.setImage(productImage);
         try{
             Product savedProduct = productService.createProduct(productDto);
             return ResponseEntity.ok().body(savedProduct);
