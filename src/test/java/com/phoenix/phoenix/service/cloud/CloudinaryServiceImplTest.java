@@ -3,11 +3,8 @@ package com.phoenix.phoenix.service.cloud;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,7 +39,7 @@ class CloudinaryServiceImplTest {
         File file = new File("src/test/resources/Gideon and Nonso and CJ.jpg");
         log.info("File is :: {}", file);
         assertThat(file.exists()).isTrue();
-        Map<?,?> uploadResult = cloudinaryService.upload(file, ObjectUtils.emptyMap());
+        Map<?,?> uploadResult = cloudinaryService.upload(Files.readAllBytes(file.toPath()), ObjectUtils.emptyMap());
         log.info("Upload result is :: {}",uploadResult);
         assertThat(uploadResult.get("url")).isNotNull();
     }
@@ -63,7 +60,7 @@ class CloudinaryServiceImplTest {
         assertThat(multipartFile).isNotNull();
         assertThat(multipartFile.isEmpty()).isFalse();
         //upload to cloud
-        cloudinaryService.upload(multipartFile, ObjectUtils.emptyMap());
+        cloudinaryService.upload(multipartFile.getBytes(), ObjectUtils.emptyMap());
 
     }
 }
