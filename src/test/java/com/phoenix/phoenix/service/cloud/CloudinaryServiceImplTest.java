@@ -39,7 +39,7 @@ class CloudinaryServiceImplTest {
         File file = new File("src/test/resources/Gideon and Nonso and CJ.jpg");
         log.info("File is :: {}", file);
         assertThat(file.exists()).isTrue();
-        Map<?,?> uploadResult = cloudinaryService.upload(Files.readAllBytes(file.toPath()), ObjectUtils.emptyMap());
+        Map<?,?> uploadResult = cloudinaryService.upload(Files.readAllBytes(file.toPath()), ObjectUtils.asMap("overwrite",true));
         log.info("Upload result is :: {}",uploadResult);
         assertThat(uploadResult.get("url")).isNotNull();
     }
@@ -60,7 +60,7 @@ class CloudinaryServiceImplTest {
         assertThat(multipartFile).isNotNull();
         assertThat(multipartFile.isEmpty()).isFalse();
         //upload to cloud
-        cloudinaryService.upload(multipartFile.getBytes(), ObjectUtils.emptyMap());
+        cloudinaryService.upload(multipartFile.getBytes(), ObjectUtils.asMap("overwrite",true));
 
     }
 }
