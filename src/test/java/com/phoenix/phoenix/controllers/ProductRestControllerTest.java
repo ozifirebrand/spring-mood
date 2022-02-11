@@ -3,21 +3,26 @@ package com.phoenix.phoenix.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.phoenix.data.models.Product;
 import com.phoenix.phoenix.data.repository.ProductRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
 
 //import static org.junit.jupiter.api.Assertions.*;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,6 +36,7 @@ class ProductRestControllerTest {
     @Autowired
     private ProductRepository repository;
 
+    private Model Model;
     @Autowired
     private MockMvc mockMvc;
 
@@ -52,20 +58,19 @@ class ProductRestControllerTest {
 
     @Test
     public void createProduct() throws Exception {
-        Product product = new Product();
-        product.setName("Mymy");
-        product.setPrice(550
-        );
-        product.setDescription("A detergent by Bimbo");
-        product.setQuantity(10);
-        product.setImageUrl("product.detergent.bimbo");
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post("/api/product")
+                .param("name", "Moto car")
+                .param("description", "Nice")
+                .param("price", "540.8")
+                .param("quantity", "5");
 
-        String requestBody = mapper.writeValueAsString(product);
-        mockMvc.perform(post("/api/product")
-                        .contentType("application/json")
-                        .content(requestBody))
+
+        mockMvc.perform(request
+                .contentType("multipart/form-data"))
                 .andExpect(status().is(200))
                 .andDo(print());
+
     }
 
     @Test
