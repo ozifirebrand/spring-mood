@@ -28,16 +28,11 @@ public class ProductServiceImpl implements ProductService {
     private CloudinaryService cloudinaryService;
     @Override
     public Product createProduct(ProductDto productDto) throws BusinessLogicException {
-
+        Product product = new Product();
         //product dto is not null
         validateDtoContent(productDto);
-
-        Product product = new Product();
-
         getImageUrl(productDto, product);
-
         mapProductDtoToProduct(productDto, product);
-
         return productRepository.save(product);
     }
 
@@ -91,6 +86,10 @@ public class ProductServiceImpl implements ProductService {
                 ("Product with ID "+productId+" does not exist");
         Product targetProduct = optionalProduct.get();
 
+        return getProduct(patch, targetProduct);
+    }
+
+    private Product getProduct(JsonPatch patch, Product targetProduct) throws BusinessLogicException {
         try{
             targetProduct = applyPatchToProduct(patch, targetProduct);
             return productRepository.save(targetProduct);
