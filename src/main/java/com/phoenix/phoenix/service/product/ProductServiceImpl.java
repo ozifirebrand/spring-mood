@@ -26,29 +26,12 @@ public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
     @Autowired
     private CloudinaryService cloudinaryService;
-
-    @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
-
-    @Override
-    public Product findProductById(Long id) throws ProductDoesNotExistException {
-        if ( id == null ){
-            throw new IllegalArgumentException("Id cannot be null");
-        }
-        Optional<Product> optionalProduct = productRepository.findById(id);
-        if ( optionalProduct.isPresent()) return optionalProduct.get();
-
-        throw new ProductDoesNotExistException("Product with id: "+id+" does not exist");
-    }
-
     @Override
     public Product createProduct(ProductDto productDto) throws BusinessLogicException {
 
         //product dto is not null
         if ( productDto == null ) {
-            throw new IllegalArgumentException("Argument cannot be null");
+            throw new IllegalArgumentException("Product information cannot be empty!");
         }
         if ( productRepository.findProductByName(productDto.getName()) != null ) throw new BusinessLogicException("Product already exists");
 
@@ -71,6 +54,22 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(productDto.getDescription());
 
         return productRepository.save(product);
+    }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
+
+    @Override
+    public Product findProductById(Long id) throws ProductDoesNotExistException {
+        if ( id == null ){
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if ( optionalProduct.isPresent()) return optionalProduct.get();
+
+        throw new ProductDoesNotExistException("Product with id: "+id+" does not exist");
     }
 
     @Override
