@@ -30,13 +30,32 @@ public class ProductServiceImpl implements ProductService {
     public Product createProduct(ProductDto productDto) throws BusinessLogicException {
 
         //product dto is not null
+        validateDtoContent(productDto);
+
+        Product product = new Product();
+
+        getImageUrl(productDto, product);
+
+        mapProductDtoToProduct(productDto, product);
+
+        return productRepository.save(product);
+    }
+
+    private void validateDtoContent(ProductDto productDto) throws BusinessLogicException {
         if ( productDto == null ) {
             throw new IllegalArgumentException("Product information cannot be empty!");
         }
         if ( productRepository.findProductByName(productDto.getName()) != null ) throw new BusinessLogicException("Product already exists");
+    }
 
-        Product product = new Product();
+    private void mapProductDtoToProduct(ProductDto productDto, Product product) {
+        product.setName(productDto.getName());
+        product.setPrice(productDto.getPrice());
+        product.setQuantity(productDto.getQuantity());
+        product.setDescription(productDto.getDescription());
+    }
 
+    private void getImageUrl(ProductDto productDto, Product product) {
         try{
             if ( productDto.getImage()!= null ) {
                 Map<?, ?> uploadResult = cloudinaryService
@@ -47,13 +66,6 @@ public class ProductServiceImpl implements ProductService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        product.setName(productDto.getName());
-        product.setPrice(productDto.getPrice());
-        product.setQuantity(productDto.getQuantity());
-        product.setDescription(productDto.getDescription());
-
-        return productRepository.save(product);
     }
 
     @Override
