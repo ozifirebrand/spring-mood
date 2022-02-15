@@ -80,7 +80,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProduct(Long productId,JsonPatch patch) throws BusinessLogicException, JsonPatchException, JsonProcessingException {
+    public Product updateProduct(Long productId,JsonPatch patch) throws BusinessLogicException {
         Optional<Product> optionalProduct = productRepository.findById(productId);
         if ( optionalProduct.isEmpty() ) throw new BusinessLogicException
                 ("Product with ID "+productId+" does not exist");
