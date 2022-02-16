@@ -5,12 +5,10 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
 @Entity
 @Data
 public class Product {
     @Id
-    @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
