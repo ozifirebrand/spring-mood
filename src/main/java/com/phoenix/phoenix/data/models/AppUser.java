@@ -27,7 +27,7 @@ public class AppUser {
     @Column(unique = true)
     private String email;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @Getter
     private final Cart cart;
 
