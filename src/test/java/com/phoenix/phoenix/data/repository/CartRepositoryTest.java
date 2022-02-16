@@ -43,7 +43,6 @@ class CartRepositoryTest {
     }
 
     @Test
-    @Transactional
     public void viewItemsInCartTest(){
         //get a cart by Id
         Cart savedCart = cartRepository.findById(345L).orElse(null);
