@@ -18,7 +18,7 @@ public class Cart {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @OneToMany(cascade =  CascadeType.PERSIST)
+    @OneToMany(cascade =  CascadeType.PERSIST, fetch = FetchType.EAGER)
     private List<Item> itemList;
 
     @Transient
