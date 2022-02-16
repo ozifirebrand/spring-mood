@@ -10,12 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Slf4j
-@Sql(scripts = {"/db/insert.sql"})
+@Sql(scripts = {"/db/insert.sql"})//This script is used for test purposes
 class CartRepositoryTest {
 
     @Autowired
@@ -39,6 +40,15 @@ class CartRepositoryTest {
         assertThat(cart.getItemList().isEmpty()).isFalse();
         assertThat(cart.getItemList().get(0).getProduct()).isNotNull();
 
+    }
+
+    @Test
+    @Transactional
+    public void viewItemsInCartTest(){
+        //get a cart by Id
+        Cart savedCart = cartRepository.findById(345L).orElse(null);
+        assertThat(savedCart).isNotNull();
+        assertThat(savedCart.getItemList().size()).isEqualTo(3);
     }
 
 
