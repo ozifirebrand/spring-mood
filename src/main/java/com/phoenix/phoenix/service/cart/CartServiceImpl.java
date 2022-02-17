@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-
 @Service
 public class CartServiceImpl implements CartService {
     @Autowired
@@ -92,7 +91,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Cart viewCart() {
-        return null;
+    public Cart viewCart(Long id) {
+        return cartRepository.findById(id).orElse(null);
     }
 }
