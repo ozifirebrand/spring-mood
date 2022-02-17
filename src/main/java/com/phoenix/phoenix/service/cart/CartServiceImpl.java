@@ -1,3 +1,5 @@
+
+
 package com.phoenix.phoenix.service.cart;
 
 import com.phoenix.phoenix.data.dto.CartRequestDto;
@@ -19,7 +21,7 @@ import java.util.Optional;
 
 
 @Service
-public class CartServiceImpl implements CartService{
+public class CartServiceImpl implements CartService {
     @Autowired
     private CartRepository cartRepository;
 
@@ -29,22 +31,35 @@ public class CartServiceImpl implements CartService{
     @Autowired
     private ProductRepository productRepository;
 
-    @Override
-    public CartResponseDto addItemToCart(CartRequestDto cartRequestDto)
-            throws UserNotFoundException, ProductDoesNotExistException,
-            BusinessLogicException {
+    private boolean quantityIsNotValid(Product product, int quantity){
+        return product.getQuantity() <= quantity;
+    }
 
+
+    private CartResponseDto buildCartResponse(Cart cart){
+        return CartResponseDto.builder().itemList(cart.getItemList()).totalPrice(cart.getTotalPrice()).build();
+    }
+
+
+    private Double calculateItemPrice(Item item){
+        return item.getProduct().getPrice() * item.getQuantityAdded();
+    }
+
+
+    private AppUser getUserFromRequestDto(CartRequestDto cartRequestDto) throws UserNotFoundException {
         Optional<AppUser> query = appUserRepository.findById(cartRequestDto.getUserId());
 
         if ( query.isEmpty() ){
-            throw new UserNotFoundException("User with ID "+cartRequestDto.getUserId()+ " not found");
+            throw new UserNotFoundException("User with ID "+ cartRequestDto.getUserId()+ " not found");
         }
-        AppUser user = query.get();
+        return query.get();
+    }
 
-        //get user cart
-        Cart cart = user.getCart();
 
-        //check user exists
+
+    private Product getProductFromRequestDto(CartRequestDto cartRequestDto)
+            throws ProductDoesNotExistException, BusinessLogicException {
+
         Product product = productRepository.findById(13L).orElse(null);
         if ( product ==null ){
             throw new ProductDoesNotExistException("Product with ID "+
@@ -53,29 +68,27 @@ public class CartServiceImpl implements CartService{
 
         if ( quantityIsNotValid(product, cartRequestDto.getQuantity()) )
             throw new BusinessLogicException("Quantity too large");
+        return product;
+    }
 
-        //add product to cart
+
+    private void calculateNewTotalPriceOfCart(CartRequestDto cartRequestDto, Cart cart, Product product) {
         Item cartItem = new Item(product, cartRequestDto.getQuantity());
         cart.addItem(cartItem);
-        cart.setTotalPrice(cart.getTotalPrice() + calculateItemPrice(cartItem));
+        cart.setTotalPrice(cart.getTotalPrice()+ calculateItemPrice(cartItem));
+    }
 
-        //save cart
+
+    @Override
+    public CartResponseDto addItemToCart(CartRequestDto cartRequestDto) throws UserNotFoundException, ProductDoesNotExistException, BusinessLogicException {
+
+        AppUser user = getUserFromRequestDto(cartRequestDto);
+        Product product = getProductFromRequestDto(cartRequestDto);
+        Cart cart = user.getCart();
+
+        calculateNewTotalPriceOfCart(cartRequestDto, cart, product);
         cartRepository.save(cart);
-
         return buildCartResponse(cart);
-
-    }
-
-    private boolean quantityIsNotValid(Product product, int quantity){
-        return product.getQuantity() <= quantity;
-    }
-
-    private Double calculateItemPrice(Item item){
-        return item.getProduct().getPrice() * item.getQuantityAdded();
-    }
-
-    private CartResponseDto buildCartResponse(Cart cart){
-        return  CartResponseDto.builder().itemList(cart.getItemList()).totalPrice(cart.getTotalPrice()).build();
     }
 
     @Override
