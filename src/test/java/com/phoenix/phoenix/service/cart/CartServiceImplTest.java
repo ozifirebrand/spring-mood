@@ -43,28 +43,7 @@ class CartServiceImplTest {
         cartItemDto.setProductId(13L);
         cartItemDto.setQuantity(1);
         cartItemDto.setUserId(5010L);
-
-        //check if user exists
-
-        AppUser user = appUserRepository.findById(cartItemDto.getUserId()).orElse(null);
-        assertThat(user).isNotNull();
-
-        //get user cart
-        Cart cart = user.getCart();
-        assertThat(cart).isNotNull();
-
-        //check user exists
-        Product product = productRepository.findById(13L).orElse(null);
-        assertThat(product).isNotNull();
-        assertThat(product.getQuantity()).isGreaterThanOrEqualTo(cartItemDto.getQuantity());
-
-        //add product to cart
-        Item cartItem = new Item(product, cartItemDto.getQuantity());
-        cart.addItem(cartItem);
-
-        //save cart
-        repository.save(cart);
-        assertThat(cart.getItemList().size()).isEqualTo(1);
+        assertThat(repository.findAll().size()).isEqualTo(1);
 
     }
 }
