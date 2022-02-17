@@ -3,12 +3,11 @@ package com.phoenix.phoenix.data.models;
 import lombok.Data;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Component
+@Entity
 @Data
 public class AppUser {
     @Id
