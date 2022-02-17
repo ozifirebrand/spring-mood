@@ -1,4 +1,4 @@
-package com.phoenix.phoenix.exceptions;
+package com.phoenix.phoenix.web.exceptions;
 
 public class UserNotFoundException extends Exception{
     public UserNotFoundException(String message){
