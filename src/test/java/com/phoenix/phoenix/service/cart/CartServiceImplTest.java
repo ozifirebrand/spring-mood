@@ -1,13 +1,10 @@
 package com.phoenix.phoenix.service.cart;
 
-import com.phoenix.phoenix.data.dto.CartItemDto;
-import com.phoenix.phoenix.data.models.AppUser;
-import com.phoenix.phoenix.data.models.Cart;
-import com.phoenix.phoenix.data.models.Item;
-import com.phoenix.phoenix.data.models.Product;
-import com.phoenix.phoenix.data.repository.AppUserRepository;
-import com.phoenix.phoenix.data.repository.CartRepository;
-import com.phoenix.phoenix.data.repository.ProductRepository;
+import com.phoenix.phoenix.data.dto.CartRequestDto;
+import com.phoenix.phoenix.data.dto.CartResponseDto;
+import com.phoenix.phoenix.web.exceptions.BusinessLogicException;
+import com.phoenix.phoenix.web.exceptions.ProductDoesNotExistException;
+import com.phoenix.phoenix.web.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,13 +18,7 @@ import static org.assertj.core.api.Assertions.*;
 class CartServiceImplTest {
 
     @Autowired
-    AppUserRepository appUserRepository;
-
-    @Autowired
-    ProductRepository productRepository;
-
-    @Autowired
-    CartRepository repository;
+    CartService cartService;
 
     @BeforeEach
     void setUp() {
@@ -38,12 +29,15 @@ class CartServiceImplTest {
     }
 
     @Test
-    public void addItemToCart(){
-        CartItemDto cartItemDto = new CartItemDto();
-        cartItemDto.setProductId(13L);
-        cartItemDto.setQuantity(1);
-        cartItemDto.setUserId(5010L);
-        assertThat(repository.findAll().size()).isEqualTo(1);
+    public void addItemToCart() throws UserNotFoundException, ProductDoesNotExistException, BusinessLogicException {
+        CartRequestDto cartRequestDto = new CartRequestDto();
+        cartRequestDto.setProductId(13L);
+        cartRequestDto.setQuantity(1);
+        cartRequestDto.setUserId(5010L);
+
+        CartResponseDto cartResponseDto = cartService.addItemToCart(cartRequestDto);
+        assertThat(cartResponseDto.getItemList()).isNotNull();
+        assertThat(cartResponseDto.getItemList().size()).isEqualTo(1);
 
     }
 }
