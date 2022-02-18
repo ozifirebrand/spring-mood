@@ -46,4 +46,9 @@ class CartServiceImplTest {
         assertThat(cartResponseDto.getTotalPrice()).isEqualTo(1000);
     }
 
+    @Test
+    public void testCanUpdateCart(){
+
+    }
+
 }
