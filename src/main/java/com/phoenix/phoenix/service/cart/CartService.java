@@ -9,7 +9,7 @@ import com.phoenix.phoenix.web.exceptions.BusinessLogicException;
 
 public interface CartService {
     CartResponseDto addItemToCart(CartRequestDto cartRequestDto) throws BusinessLogicException;
-    Cart viewCart(Long id);
+    CartResponseDto viewCart(Long userId) throws BusinessLogicException;
     CartResponseDto updateCartItem(CartUpdateDto cartUpdateDto) throws BusinessLogicException;
 }
 
