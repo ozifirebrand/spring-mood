@@ -5,6 +5,7 @@ package com.phoenix.phoenix.service.cart;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.phoenix.phoenix.data.dto.CartRequestDto;
 import com.phoenix.phoenix.data.dto.CartResponseDto;
+import com.phoenix.phoenix.data.dto.CartUpdateDto;
 import com.phoenix.phoenix.data.models.AppUser;
 import com.phoenix.phoenix.data.models.Cart;
 import com.phoenix.phoenix.data.models.Item;
@@ -80,7 +81,7 @@ public class CartServiceImpl implements CartService {
 
 
     @Override
-    public CartResponseDto addItemToCart(CartRequestDto cartRequestDto) throws UserNotFoundException, ProductDoesNotExistException, BusinessLogicException {
+    public CartResponseDto addItemToCart(CartRequestDto cartRequestDto) throws BusinessLogicException {
 
         AppUser user = getUserFromRequestDto(cartRequestDto);
         Product product = getProductFromRequestDto(cartRequestDto);
@@ -97,7 +98,13 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartResponseDto updateCart(Long id, JsonPatch jsonPatch) {
+    public CartResponseDto updateCartItem(CartUpdateDto cartUpdateDto) {
+        //get a cart by userId
+
+        //Find an item within cart within itemId
+
+        //Perform update to item
+
         return null;
     }
 }
