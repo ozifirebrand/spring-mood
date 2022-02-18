@@ -10,6 +10,6 @@ import com.phoenix.phoenix.web.exceptions.BusinessLogicException;
 public interface CartService {
     CartResponseDto addItemToCart(CartRequestDto cartRequestDto) throws BusinessLogicException;
     Cart viewCart(Long id);
-    CartResponseDto updateCartItem(CartUpdateDto cartUpdateDto);
+    CartResponseDto updateCartItem(CartUpdateDto cartUpdateDto) throws BusinessLogicException;
 }
 
