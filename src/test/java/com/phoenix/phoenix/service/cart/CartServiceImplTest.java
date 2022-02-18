@@ -12,16 +12,29 @@ import com.phoenix.phoenix.web.exceptions.BusinessLogicException;
 import com.phoenix.phoenix.web.exceptions.ProductDoesNotExistException;
 import com.phoenix.phoenix.web.exceptions.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+
+import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.*;
 @SpringBootTest
 @Sql(scripts = {"/db/insert.sql"})
 @Slf4j
 class CartServiceImplTest {
+    private CartUpdateDto updateDto;
+
+    @BeforeEach
+    public void setUp(){
+        updateDto = CartUpdateDto.builder()
+                .itemId(510L)
+                .userId(5005L)
+                .quantityOperation(QuantityOperation.INCREASE)
+                .build();
+    }
 
     @Autowired
     CartService cartService;
@@ -45,9 +58,9 @@ class CartServiceImplTest {
     public void priceHasBeenUpdated() throws UserNotFoundException, ProductDoesNotExistException, BusinessLogicException {
         assertThat(cartService.viewCart(345L).getTotalPrice()).isEqualTo(0);
         CartRequestDto cartRequestDto = new CartRequestDto();
-        cartRequestDto.setProductId(13L);
+        cartRequestDto.setProductId(14L);
         cartRequestDto.setQuantity(2);
-        cartRequestDto.setUserId(5010L);
+        cartRequestDto.setUserId(5005L);
 
         CartResponseDto cartResponseDto = cartService.addItemToCart(cartRequestDto);
         log.info("Cart is {}", cartService.viewCart(345L));
@@ -56,43 +69,19 @@ class CartServiceImplTest {
     }
 
     @Test
-    public void testCanUpdateCart(){
-
-        CartUpdateDto updateDto = CartUpdateDto.builder()
-                .itemId(13L)
-                .userId(5005L)
-                .quantityOperation(QuantityOperation.INCREASE)
-                .build();
+    public void testCanUpdateCart() throws BusinessLogicException {
 
         AppUser user = appUserRepository.findById(updateDto.getUserId()).orElse(null);
         assertThat(user).isNotNull();
         Cart cart =user.getCart();
-
-        Item item = null;
-        for (int index = 0; index < cart.getItemList().size(); index ++){
-            item = cart.getItemList().get(index);
-            if ( item.getId() == updateDto.getItemId() ){
-                break;
-            }
-        }
-        assertThat(item).isNotNull();
-        assertThat(item.getQuantityAdded()).isEqualTo(3);
-
+        Item item = cart.getItemList().get(0);
+        log.info("cart contains {}", cart);
+        log.info("quantity of items --> {}",item.getQuantityAdded() );
+        assertThat(item.getQuantityAdded()).isEqualTo(14);
         log.info("Cart update {}", updateDto);
         CartResponseDto responseDto = cartService.updateCartItem(updateDto);
-
-
-        //get the item
-
-        for ( int index = 0 ; index < responseDto.getItemList().size(); index++){
-            item = responseDto.getItemList().get(index);
-            if ( item.getId() == updateDto.getItemId() );
-            break;
-        }
-
-
-        assertThat(item).isNotNull();
-        assertThat(item.getQuantityAdded()).isEqualTo(4);
+        assertThat(responseDto.getItemList()).isNotNull();
+        assertThat(responseDto.getItemList().get(0).getQuantityAdded()).isEqualTo(15);
     }
 
 }
