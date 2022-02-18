@@ -1,2 +1,5 @@
-package com.phoenix.phoenix.data.dto;public class QuantityOperation {
+package com.phoenix.phoenix.data.dto;
+
+public enum QuantityOperation {
+    INCREASE, DECREASE;
 }
