@@ -84,6 +84,12 @@ public class CartServiceImpl implements CartService {
     }
 
 
+    private Optional<Item> findCartItem(Long itemId, Cart cart){
+        Predicate<Item> itemPredicate = i -> i.getId().equals(itemId);
+        return cart.getItemList().stream().filter(itemPredicate).findFirst();
+    }
+
+
     @Override
     public CartResponseDto addItemToCart(CartRequestDto cartRequestDto) throws BusinessLogicException {
 
@@ -97,8 +103,12 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Cart viewCart(Long id) {
-        return cartRepository.findById(id).orElse(null);
+    public CartResponseDto viewCart(Long userId) throws BusinessLogicException {
+        AppUser user = appUserRepository.findById(userId).orElse(null);
+        if ( user == null ) throw new UserNotFoundException("User with id "+userId +" not found");
+
+        Cart cart = user.getCart();
+        return buildCartResponse(cart);
     }
 
     @Override
@@ -129,10 +139,5 @@ public class CartServiceImpl implements CartService {
         cartRepository.save(cart);
 
         return buildCartResponse(cart);
-    }
-
-    private Optional<Item> findCartItem(Long itemId, Cart cart){
-        Predicate<Item> itemPredicate = i -> i.getId().equals(itemId);
-        return cart.getItemList().stream().filter(itemPredicate).findFirst();
     }
 }
