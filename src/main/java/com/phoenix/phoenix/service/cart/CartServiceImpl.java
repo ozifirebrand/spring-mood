@@ -116,10 +116,15 @@ public class CartServiceImpl implements CartService {
 
         //Perform update to item
 
-        if ( cartUpdateDto.getQuantityOperation() == QuantityOperation.INCREASE )
-            item.setQuantityAdded(item.getQuantityAdded()+1);
-        if ( cartUpdateDto.getQuantityOperation() == QuantityOperation.DECREASE )
-            item.setQuantityAdded(item.getQuantityAdded()-1);
+        if ( cartUpdateDto.getQuantityOperation() == QuantityOperation.INCREASE ) {
+            item.setQuantityAdded(item.getQuantityAdded() + 1);
+            cart.setTotalPrice(cart.getTotalPrice() + item.getProduct().getPrice());
+        }
+        else if ( cartUpdateDto.getQuantityOperation() == QuantityOperation.DECREASE ) {
+            item.setQuantityAdded(item.getQuantityAdded() - 1);
+            cart.setTotalPrice(cart.getTotalPrice() - item.getProduct().getPrice());
+
+        }
 
         cartRepository.save(cart);
 
