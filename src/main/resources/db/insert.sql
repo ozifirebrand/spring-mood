@@ -22,8 +22,8 @@ values(510, 14, 12),
        (512, 13, 14);
 
 insert into cart_item_list(cart_id, item_list_id)
-values(345, 510),
-       (345, 511),
-       (345, 512);
+values(345, 510);
+--        (345, 511),
+--        (345, 512);
 
 set foreign_key_checks = 1;
