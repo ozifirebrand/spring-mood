@@ -2,6 +2,12 @@ package com.phoenix.phoenix.service.cart;
 
 import com.phoenix.phoenix.data.dto.CartRequestDto;
 import com.phoenix.phoenix.data.dto.CartResponseDto;
+import com.phoenix.phoenix.data.dto.CartUpdateDto;
+import com.phoenix.phoenix.data.dto.QuantityOperation;
+import com.phoenix.phoenix.data.models.AppUser;
+import com.phoenix.phoenix.data.models.Cart;
+import com.phoenix.phoenix.data.models.Item;
+import com.phoenix.phoenix.data.repository.AppUserRepository;
 import com.phoenix.phoenix.web.exceptions.BusinessLogicException;
 import com.phoenix.phoenix.web.exceptions.ProductDoesNotExistException;
 import com.phoenix.phoenix.web.exceptions.UserNotFoundException;
@@ -19,6 +25,9 @@ class CartServiceImplTest {
 
     @Autowired
     CartService cartService;
+
+    @Autowired
+    AppUserRepository appUserRepository;
 
     @Test
     public void addItemToCart() throws UserNotFoundException, ProductDoesNotExistException, BusinessLogicException {
@@ -49,6 +58,41 @@ class CartServiceImplTest {
     @Test
     public void testCanUpdateCart(){
 
+        CartUpdateDto updateDto = CartUpdateDto.builder()
+                .itemId(13L)
+                .userId(5005L)
+                .quantityOperation(QuantityOperation.INCREASE)
+                .build();
+
+        AppUser user = appUserRepository.findById(updateDto.getUserId()).orElse(null);
+        assertThat(user).isNotNull();
+        Cart cart =user.getCart();
+
+        Item item = null;
+        for (int index = 0; index < cart.getItemList().size(); index ++){
+            item = cart.getItemList().get(index);
+            if ( item.getId() == updateDto.getItemId() ){
+                break;
+            }
+        }
+        assertThat(item).isNotNull();
+        assertThat(item.getQuantityAdded()).isEqualTo(3);
+
+        log.info("Cart update {}", updateDto);
+        CartResponseDto responseDto = cartService.updateCartItem(updateDto);
+
+
+        //get the item
+
+        for ( int index = 0 ; index < responseDto.getItemList().size(); index++){
+            item = responseDto.getItemList().get(index);
+            if ( item.getId() == updateDto.getItemId() );
+            break;
+        }
+
+
+        assertThat(item).isNotNull();
+        assertThat(item.getQuantityAdded()).isEqualTo(4);
     }
 
 }
