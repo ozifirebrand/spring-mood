@@ -2,6 +2,7 @@
 
 package com.phoenix.phoenix.service.cart;
 
+import com.github.fge.jsonpatch.JsonPatch;
 import com.phoenix.phoenix.data.dto.CartRequestDto;
 import com.phoenix.phoenix.data.dto.CartResponseDto;
 import com.phoenix.phoenix.data.models.AppUser;
@@ -93,5 +94,10 @@ public class CartServiceImpl implements CartService {
     @Override
     public Cart viewCart(Long id) {
         return cartRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public CartResponseDto updateCart(Long id, JsonPatch jsonPatch) {
+        return null;
     }
 }
