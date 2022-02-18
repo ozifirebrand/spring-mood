@@ -6,6 +6,7 @@ import com.phoenix.phoenix.service.cart.CartService;
 import com.phoenix.phoenix.web.exceptions.BusinessLogicException;
 import com.phoenix.phoenix.web.exceptions.ProductDoesNotExistException;
 import com.phoenix.phoenix.web.exceptions.UserNotFoundException;
+import org.assertj.core.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
