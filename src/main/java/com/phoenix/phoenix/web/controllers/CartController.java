@@ -1,4 +1,4 @@
-package com.phoenix.phoenix.controllers;
+package com.phoenix.phoenix.web.controllers;
 
 import com.phoenix.phoenix.data.dto.CartRequestDto;
 import com.phoenix.phoenix.data.dto.CartResponseDto;
