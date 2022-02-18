@@ -2,10 +2,10 @@
 
 package com.phoenix.phoenix.service.cart;
 
-import com.github.fge.jsonpatch.JsonPatch;
 import com.phoenix.phoenix.data.dto.CartRequestDto;
 import com.phoenix.phoenix.data.dto.CartResponseDto;
 import com.phoenix.phoenix.data.dto.CartUpdateDto;
+import com.phoenix.phoenix.data.dto.QuantityOperation;
 import com.phoenix.phoenix.data.models.AppUser;
 import com.phoenix.phoenix.data.models.Cart;
 import com.phoenix.phoenix.data.models.Item;
@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -38,7 +39,10 @@ public class CartServiceImpl implements CartService {
 
 
     private CartResponseDto buildCartResponse(Cart cart){
-        return CartResponseDto.builder().itemList(cart.getItemList()).totalPrice(cart.getTotalPrice()).build();
+        return CartResponseDto.builder()
+                .itemList(cart.getItemList())
+                .totalPrice(cart.getTotalPrice())
+                .build();
     }
 
 
@@ -98,13 +102,32 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartResponseDto updateCartItem(CartUpdateDto cartUpdateDto) {
+    public CartResponseDto updateCartItem(CartUpdateDto cartUpdateDto) throws BusinessLogicException {
+        //get user by id
+        AppUser appUser = appUserRepository.findById(cartUpdateDto.getUserId()).orElse(null);
+        if ( appUser == null )
+            throw new UserNotFoundException("User with id "
+                    +cartUpdateDto.getUserId() +" does not exist");
         //get a cart by userId
-
+        Cart cart = appUser.getCart();
         //Find an item within cart within itemId
+        Item item = findCartItem(cartUpdateDto.getItemId(), cart).orElse(null);
+        if ( item == null ) throw new BusinessLogicException("Item not in cart");
 
         //Perform update to item
 
-        return null;
+        if ( cartUpdateDto.getQuantityOperation() == QuantityOperation.INCREASE )
+            item.setQuantityAdded(item.getQuantityAdded()+1);
+        if ( cartUpdateDto.getQuantityOperation() == QuantityOperation.DECREASE )
+            item.setQuantityAdded(item.getQuantityAdded()-1);
+
+        cartRepository.save(cart);
+
+        return buildCartResponse(cart);
+    }
+
+    private Optional<Item> findCartItem(Long itemId, Cart cart){
+        Predicate<Item> itemPredicate = i -> i.getId().equals(itemId);
+        return cart.getItemList().stream().filter(itemPredicate).findFirst();
     }
 }
