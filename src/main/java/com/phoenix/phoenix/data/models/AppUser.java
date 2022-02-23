@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -24,12 +25,20 @@ public class AppUser {
     @Column(length = 500)
     private String address;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @Getter
     private final Cart cart;
+
+    @Column(nullable = false)
+    private String password;
+
+    private boolean enabled;
+
+    @ElementCollection
+    private List<Authority> authorities;
 
     public AppUser(){
         this.cart = new Cart();
