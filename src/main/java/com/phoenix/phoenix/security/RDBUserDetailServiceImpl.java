@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//@Service
-public class UserDetailServiceImpl implements UserDetailsService {
+@Service
+public class RDBUserDetailServiceImpl implements UserDetailsService {
 
     @Autowired
     private AppUserRepository appUserRepository;
