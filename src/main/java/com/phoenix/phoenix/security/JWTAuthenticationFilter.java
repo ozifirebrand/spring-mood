@@ -91,7 +91,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                         null, new ArrayList<>());
             }
         }
-
         return null;
     }
 }
