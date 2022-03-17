@@ -77,11 +77,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request){
-        String token = request.getHeader("Authorization");
+        String header = request.getHeader("Authorization");
 
-        if ( token != null ){
+        if ( header != null ){
             String username = JWT.require(Algorithm.HMAC256("mysecretCode8573@!"))
-                    .build().verify(token.replace("Bearer",
+                    .build().verify(header.replace("Bearer",
                             "")).getSubject();
 
             if ( username != null ) {
