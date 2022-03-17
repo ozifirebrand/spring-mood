@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.phoenix.data.models.AppUser;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 
+@Slf4j
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 //    @Autowired
@@ -30,7 +32,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         this.authenticationManager = authenticationManager;
         this.mapper = new ObjectMapper();
     }
-
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
             HttpServletResponse response) throws AuthenticationException {
@@ -46,10 +47,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
             return authenticationManager.authenticate(token);
         }catch (IOException exception){
-            System.out.println(exception.getMessage());
+            log.info(exception.getMessage());
         }
-
-
         return super.attemptAuthentication(request, response);
     }
 
@@ -57,8 +56,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request,
     HttpServletResponse response, FilterChain chain, Authentication authResult){
 
-        String jwtToken = JWT.create().withSubject(((User)authResult
-                        .getPrincipal()).getUsername())
+        String jwtToken = JWT.create().withSubject(((User)authResult.getPrincipal())
+                        .getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() +864_000))
                 .sign(Algorithm.HMAC256("mysecretCode8573@!".getBytes()));
         response.addHeader("Authorization", jwtToken);
